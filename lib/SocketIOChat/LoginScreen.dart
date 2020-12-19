@@ -1,5 +1,8 @@
 import 'package:chat_app/SocketIOChat/ChatUsersScreen.dart';
+import 'package:chat_app/SocketIOChat/Global.dart';
 import 'package:flutter/material.dart';
+
+import 'User.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen() : super();
@@ -17,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     _usernameController = TextEditingController();
+    Global.initDummyUsers();
   }
 
   @override
@@ -62,10 +66,18 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_usernameController.text.isEmpty) {
       return;
     }
-    _openChatUsersListScreen(context);
+    User diyar = Global.dummyUsers[0];
+    print(Global.dummyUsers[0].name);
+
+    if (_usernameController.text != 'a') {
+      diyar = Global.dummyUsers[1];
+    }
+    Global.loggedInUser = diyar;
+
+    openChatUsersListScreen(context);
   }
 
-  _openChatUsersListScreen(context) async {
+  static openChatUsersListScreen(BuildContext context) async {
     await Navigator.pushReplacementNamed(
       context,
       ChatUsersScreens.ROUTE_ID,
