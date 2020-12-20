@@ -71,4 +71,6 @@ class _ChatUsersScreenState extends State<ChatUsersScreen> {
           ])),
     );
   }
+//craete chat area below
+  _buttomChatArea
 }
