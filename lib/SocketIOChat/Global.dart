@@ -3,6 +3,7 @@ import 'package:chat_app/SocketIOChat/User.dart';
 class Global {
   static List<User> dummyUsers;
   static User loggedInUser;
+  static User toChatUser;
 
   static void initDummyUsers() {
     User userA = new User(id: 1000, name: "a", email: "bror@bror.com");

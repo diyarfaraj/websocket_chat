@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
   static openChatUsersListScreen(BuildContext context) async {
     await Navigator.pushReplacementNamed(
       context,
-      ChatUsersScreens.ROUTE_ID,
+      ChatUsersScreen.ROUTE_ID,
     );
   }
 }
