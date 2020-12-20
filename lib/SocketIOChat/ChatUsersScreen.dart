@@ -16,10 +16,68 @@ class ChatUsersScreen extends StatefulWidget {
 class _ChatUsersScreenState extends State<ChatUsersScreen> {
   List<User> _chatUsers;
 
+  bool _connectedToSocket;
+  String _errorConnectMessage;
+
   @override
   void initState() {
     super.initState();
+    _connectedToSocket = false;
+    _errorConnectMessage = 'Connecting ...';
     _chatUsers = Global.getUsersFor(Global.loggedInUser);
+    _connectToSocket();
+  }
+
+  _connectToSocket() async {
+    print(
+        'connection logged in user ${Global.loggedInUser.name}, ${Global.loggedInUser.id}');
+    await Global.initSocket();
+    Global.socketUtils.initSocket(Global.loggedInUser);
+    Global.socketUtils.connectToSocket();
+    Global.socketUtils.setOnConnectListener(onConnect);
+    Global.socketUtils.setOnConnectionErrorListener(onConnectError);
+    Global.socketUtils.setOnConnectionTimeoutListener(onConnectTimeout);
+    Global.socketUtils.setOnDisconnectListener(onDisconnect);
+    Global.socketUtils.setOnErrorListener(onError);
+  }
+
+  onConnect(data) {
+    print('Connected $data');
+    setState(() {
+      _connectedToSocket = true;
+    });
+  }
+
+  onConnectError(data) {
+    print('onConnectError $data');
+    setState(() {
+      _connectedToSocket = false;
+      _errorConnectMessage = 'Failed to Connect';
+    });
+  }
+
+  onConnectTimeout(data) {
+    print('onConnectTimeout $data');
+    setState(() {
+      _connectedToSocket = false;
+      _errorConnectMessage = 'Connection timedout';
+    });
+  }
+
+  onError(data) {
+    print('onError $data');
+    setState(() {
+      _connectedToSocket = false;
+      _errorConnectMessage = 'Connection Failed';
+    });
+  }
+
+  onDisconnect(data) {
+    print('onDisconnect $data');
+    setState(() {
+      _connectedToSocket = false;
+      _errorConnectMessage = 'Disconnected';
+    });
   }
 
   _openChatScreen(BuildContext context) async {
@@ -50,27 +108,33 @@ class _ChatUsersScreenState extends State<ChatUsersScreen> {
         ],
       ),
       body: Container(
-          padding: EdgeInsets.all(30),
-          alignment: Alignment.center,
-          child: Column(children: [
+        padding: EdgeInsets.all(30),
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            Text(_connectedToSocket ? 'Connected' : _errorConnectMessage),
             Expanded(
-                child: ListView.builder(
-              itemCount: _chatUsers.length,
-              itemBuilder: (context, index) {
-                User user = _chatUsers[index];
-                return ListTile(
-                  onTap: () {
-                    Global.toChatUser = user;
-                    _openChatScreen(context);
-                  },
-                  title: Text(user.name),
-                  subtitle: Text(user.email + ' ' + user.id.toString()),
-                );
-              },
-            ))
-          ])),
+              child: ListView.builder(
+                itemCount: _chatUsers.length,
+                itemBuilder: (context, index) {
+                  User user = _chatUsers[index];
+                  return ListTile(
+                    onTap: () {
+                      Global.toChatUser = user;
+                      _openChatScreen(context);
+                    },
+                    title: Text(user.name),
+                    subtitle: Text(user.email + ' ' + user.id.toString()),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
+
 //craete chat area below
-  _buttomChatArea
+
 }

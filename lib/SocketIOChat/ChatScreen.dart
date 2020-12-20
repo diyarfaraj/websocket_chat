@@ -25,6 +25,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    _chatMessages = List();
     _toChatUser = Global.toChatUser;
     _userStatus = UserStatus.conntecting;
   }
@@ -34,7 +35,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       appBar: AppBar(
         title: ChatTitle(
-          toChatUser: Global.toChatUser,
+          toChatUser: _toChatUser,
           userStatus: _userStatus,
         ),
       ),
@@ -42,7 +43,49 @@ class _ChatScreenState extends State<ChatScreen> {
         alignment: Alignment.center,
         padding: EdgeInsets.all(30.0),
         child: Column(
-          children: [],
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: _chatMessages.length,
+                itemBuilder: (context, index) {
+                  ChatMessageModel chatMessageModel = _chatMessages[index];
+                  return Text(chatMessageModel.message);
+                },
+              ),
+            ),
+            _buttomChatArea(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _buttomChatArea() {
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Row(
+        children: [
+          _chatTextArea(),
+          IconButton(icon: Icon(Icons.send), onPressed: () {})
+        ],
+      ),
+    );
+  }
+
+  _chatTextArea() {
+    return Expanded(
+      child: TextField(
+        decoration: InputDecoration(
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: EdgeInsets.all(10),
+          hintText: "type message here",
         ),
       ),
     );

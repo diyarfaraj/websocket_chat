@@ -1,9 +1,13 @@
 import 'package:chat_app/SocketIOChat/User.dart';
 
+import 'SocketUtils.dart';
+
 class Global {
   static List<User> dummyUsers;
   static User loggedInUser;
   static User toChatUser;
+
+  static SocketUtils socketUtils;
 
   static void initDummyUsers() {
     User userA = new User(id: 1000, name: "a", email: "bror@bror.com");
@@ -19,5 +23,11 @@ class Global {
         .where((u) => (!u.name.toLowerCase().contains(user.name.toLowerCase())))
         .toList();
     return filteredUsers;
+  }
+
+  static initSocket() {
+    if (null == socketUtils) {
+      socketUtils = SocketUtils();
+    }
   }
 }
